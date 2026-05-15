@@ -1,0 +1,19 @@
+{
+  "models": [
+    {
+      "title": "Laguna XS.2 (Local — Agentic Coding)",
+      "provider": "openai",
+      "model": "poolside-laguna-xs.2-bf16",
+      "apiBase": "http://host.docker.internal:11434/v1",
+      "apiKey": "not-used"
+    }
+  ],
+  "tabAutocompleteModel": {
+    "title": "Laguna XS.2 Autocomplete",
+    "provider": "openai",
+    "model": "poolside-laguna-xs.2-bf16",
+    "apiBase": "http://host.docker.internal:11434/v1",
+    "apiKey": "not-used"
+  },
+  "allowAnonymousTelemetry": false
+}

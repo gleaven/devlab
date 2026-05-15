@@ -1,0 +1,30 @@
+{
+  "terminal.integrated.defaultProfile.linux": "Sandbox Terminal",
+  "terminal.integrated.profiles.linux": {
+    "Sandbox Terminal": {
+      "path": "/usr/bin/ssh",
+      "args": ["-p", "2222", "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null", "dev@devlab-sandbox"],
+      "icon": "terminal-linux"
+    },
+    "Local Shell": {
+      "path": "/bin/bash",
+      "icon": "terminal"
+    }
+  },
+  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.fontSize": 14,
+  "editor.formatOnSave": true,
+  "editor.minimap.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "git.autofetch": true,
+  "continue.telemetryEnabled": false,
+  "telemetry.telemetryLevel": "off",
+  "kilo-code.autoImportSettingsPath": "/home/coder/.config/kilo-code/provider-settings.json",
+  "kilo-code.enableSettingsSync": false,
+  "kilo-code.telemetrySetting": "disabled",
+  "kilo-code.autoApprovalEnabled": true,
+  "kilo-code.customInstructions": "IMPORTANT WORKFLOW RULES:\n1. Be ACTION-ORIENTED. When asked to create files or build something, use write_to_file immediately. Do NOT list directory contents first unless specifically asked to.\n2. NEVER call list_files more than once per directory. If you already listed a directory, use that result.\n3. After receiving any tool result, ALWAYS proceed to the next step. Never repeat the same tool call with the same parameters.\n4. Prefer creating files directly over exploring the filesystem. You can create directories and files in one step.\n5. NEVER use apply_diff. ALWAYS use write_to_file to create or modify files. Read the file first with read_file, then write the complete updated file with write_to_file.\n6. If any tool call fails, do NOT retry it. Switch to a different approach immediately."
+}

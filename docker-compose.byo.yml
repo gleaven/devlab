@@ -1,0 +1,11 @@
+# BYO override: skip the bundled mcp-bridge so users who point the IDE's
+# MCP configs at their own MCP gateway can run without it.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.byo.yml up -d
+
+services:
+  mcp-bridge:
+    deploy:
+      replicas: 0
+  sandbox:
+    depends_on: !reset []

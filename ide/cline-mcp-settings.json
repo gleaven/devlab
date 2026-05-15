@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "mcp-bridge": {
+      "url": "http://demo-mcp-bridge:4000/mcp/",
+      "type": "streamable-http",
+      "disabled": false
+    }
+  }
+}

@@ -1,0 +1,23 @@
+
+ ██████╗ ███████╗██╗   ██╗██╗      █████╗ ██████╗
+ ██╔══██╗██╔════╝██║   ██║██║     ██╔══██╗██╔══██╗
+ ██║  ██║█████╗  ██║   ██║██║     ███████║██████╔╝
+ ██║  ██║██╔══╝  ╚██╗ ██╔╝██║     ██╔══██║██╔══██╗
+ ██████╔╝███████╗ ╚████╔╝ ███████╗██║  ██║██████╔╝
+ ╚═════╝ ╚══════╝  ╚═══╝  ╚══════╝╚═╝  ╚═╝╚═════╝
+  Vibe Coding Environment — NVIDIA GB10
+
+  AI Tools:
+    cline        → VS Code sidebar (agentic AI coder)
+    continue     → VS Code tab autocomplete
+    aider        → Terminal pair programmer
+    claude       → Claude Code CLI
+
+  Languages: Python 3 | Node.js 22 | Go | Rust | Docker
+
+  Commands:
+    reset-workspace  → Restore to initial state
+    docker ps        → List running containers
+
+  Workspace: /workspace (persistent across restarts)
+

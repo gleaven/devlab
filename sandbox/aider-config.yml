@@ -1,0 +1,11 @@
+# Aider configuration for DevLab
+# Points at the host's Ollama by default. Override via .env (OLLAMA_BASE_URL,
+# LLM_MODEL) — the compose env then overrides openai-api-base / model via
+# OPENAI_API_BASE / OPENAI_API_MODEL_NAME for processes that read them.
+
+model: openai/llama3.1
+openai-api-base: http://host.docker.internal:11434/v1
+openai-api-key: not-used
+auto-commits: true
+gitignore: true
+dark-mode: true

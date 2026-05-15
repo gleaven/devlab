@@ -1,0 +1,123 @@
+# DevLab — Browser-Based Vibe Coding Environment. Standalone compose project.
+# IDE (code-server VS Code) + Sandbox (Ubuntu dev env w/ Claude Code + Aider).
+#
+# Default mode (bundled deps):  docker compose up -d
+# BYO mode (external deps):     docker compose -f docker-compose.yml -f docker-compose.byo.yml up -d
+# With HTTPS proxy:             docker compose --profile proxy up -d
+
+services:
+  # Ubuntu development sandbox — full dev toolchain + AI coding tools.
+  sandbox:
+    build:
+      context: ./sandbox
+      dockerfile: Dockerfile
+    container_name: demo-devlab-sandbox
+    hostname: devlab-sandbox
+    restart: unless-stopped
+    mem_limit: 8g
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # Aider (and other OpenAI-compatible CLIs) → host Ollama.
+      - OPENAI_API_BASE=${OLLAMA_BASE_URL:?set OLLAMA_BASE_URL in .env to your Ollama OpenAI-compatible endpoint (e.g. http://host.docker.internal:11434/v1)}
+      - OPENAI_API_KEY=${LLM_API_KEY:-not-used}
+      # Claude Code (Anthropic CLI) — points at the same OpenAI-compatible
+      # endpoint by default. NOTE: Claude Code expects the Anthropic
+      # protocol, not OpenAI's; without LiteLLM bridging it will not work
+      # directly against Ollama. Aider, Continue, and Kilo Code all speak
+      # OpenAI and work fine. Override ANTHROPIC_BASE_URL or unset these
+      # vars if you want to wire a real Anthropic endpoint.
+      - ANTHROPIC_BASE_URL=${ANTHROPIC_BASE_URL:-${OLLAMA_BASE_URL}}
+      - ANTHROPIC_AUTH_TOKEN=${ANTHROPIC_AUTH_TOKEN:-not-used}
+      - LLM_MODEL=${LLM_MODEL:?set LLM_MODEL in .env to whatever model you serve via Ollama (e.g. llama3.1, qwen2.5:7b, etc.)}
+      # Langfuse not bundled; leave host empty for tools to no-op observability.
+      - LANGFUSE_HOST=${LANGFUSE_HOST:-}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+    volumes:
+      - devlab-workspace:/workspace
+      - devlab-sandbox-home:/home/dev
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      mcp-bridge:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "pgrep", "sshd"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # code-server IDE — VS Code in the browser, on /devlab sub-path.
+  ide:
+    build:
+      context: ./ide
+      dockerfile: Dockerfile
+    container_name: demo-devlab-ide
+    restart: unless-stopped
+    mem_limit: 2g
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      - SANDBOX_HOST=devlab-sandbox
+      - SANDBOX_PORT=2222
+      - SANDBOX_USER=dev
+    volumes:
+      - devlab-ide-data:/home/coder/.local/share/code-server
+      - devlab-workspace:/workspace
+    depends_on:
+      sandbox:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/devlab/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ── Bundled dependencies ──
+  # MCP tool bridge — aggregates the IDE-side MCP servers (filesystem,
+  # fetch, memory, sequential_thinking) under one HTTP gateway. Consumed
+  # by the Claude Code / Cline / Kilo Code MCP configs in
+  # sandbox/mcp-config.json and ide/cline-mcp-settings.json.
+  mcp-bridge:
+    build: ../_shared/mcp-bridge
+    image: demo-mcp-bridge:latest
+    container_name: devlab-mcp-bridge
+    hostname: demo-mcp-bridge
+    restart: unless-stopped
+    environment:
+      - MCP_SERVERS=filesystem,fetch,memory,sequential_thinking
+    volumes:
+      - devlab-mcp-memory:/mcp-data/memory
+      - devlab-mcp-fs:/mcp-data/filesystem
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+  # Optional HTTPS reverse proxy (--profile proxy).
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["proxy"]
+    container_name: devlab-caddy
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8081}:80"
+      - "${HTTPS_PORT:-8443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - devlab-caddy-data:/data
+      - devlab-caddy-config:/config
+    depends_on:
+      - ide
+
+volumes:
+  devlab-workspace:
+  devlab-sandbox-home:
+  devlab-ide-data:
+  devlab-caddy-data:
+  devlab-caddy-config:
+  devlab-mcp-memory:
+  devlab-mcp-fs:

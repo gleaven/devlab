@@ -1,0 +1,33 @@
+{
+  "providerProfiles": {
+    "currentApiConfigName": "default",
+    "apiConfigs": {
+      "default": {
+        "id": "devlab-ollama",
+        "apiProvider": "openai",
+        "openAiBaseUrl": "http://host.docker.internal:11434/v1",
+        "openAiApiKey": "not-used",
+        "openAiModelId": "poolside-laguna-xs.2-bf16",
+        "openAiStreamingEnabled": true,
+        "includeMaxTokens": true,
+        "modelMaxTokens": 32768,
+        "autoCondenseContext": true,
+        "autoCondenseContextPercent": 75,
+        "openAiCustomModelInfo": {
+          "maxTokens": 32768,
+          "contextWindow": 131072,
+          "supportsImages": false,
+          "supportsPromptCache": false,
+          "supportsComputerUse": false
+        }
+      }
+    },
+    "modeApiConfigs": {
+      "code": "devlab-ollama",
+      "architect": "devlab-ollama",
+      "ask": "devlab-ollama",
+      "debug": "devlab-ollama",
+      "orchestrator": "devlab-ollama"
+    }
+  }
+}
