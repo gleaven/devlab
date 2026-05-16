@@ -535,3 +535,38 @@ restarts but not `docker compose down -v`.
 ## Credits
 
 Built by Andrew Meinecke.
+
+## Components & Licensing
+
+This demo is released under Apache License 2.0. It wires together the
+following third-party components, each retaining its own license:
+
+**IDE container (`ide/`):**
+
+| Component | License | Use in this demo |
+|---|---|---|
+| [code-server](https://github.com/coder/code-server) | MIT | Browser-based VS Code (the IDE itself) |
+| [Continue](https://github.com/continuedev/continue) (VS Code extension, pre-installed) | Apache 2.0 | In-editor AI chat / inline-edit / autocomplete |
+| [Cline](https://github.com/cline/cline) (VS Code extension, pre-installed) | Apache 2.0 | Agentic in-editor coding assistant |
+| [Kilo Code](https://github.com/Kilo-Org/kilocode) (VS Code extension, pre-installed) | MIT | Roo Code fork; agentic in-editor coding assistant |
+| [nginx](https://nginx.org/) | BSD-2 | `/devlab` sub-path reverse proxy |
+
+**Sandbox container (`sandbox/`):**
+
+| Component | License | Use in this demo |
+|---|---|---|
+| Ubuntu 24.04 base image | various (Ubuntu Main) | Dev environment base |
+| Python 3, Node.js 22 LTS, Go (latest), Rust (latest), Docker CLI | various permissive | Dev toolchain |
+| [Aider](https://github.com/Aider-AI/aider) | Apache 2.0 | Terminal AI pair programmer |
+| [Claude Code](https://github.com/anthropics/claude-code) (`@anthropic-ai/claude-code` npm package) | MIT | Anthropic CLI agent |
+| OpenSSH server | BSD-style (OpenBSD) | IDE↔sandbox shell on port 2222 |
+
+All bundled tooling is under permissive licenses. The AI assistants
+all speak OpenAI-compatible HTTP and are typically pointed at a
+host-side [Ollama](https://github.com/ollama/ollama) (MIT); the
+language-model weights you serve carry their own license — accept
+them on first use.
+
+Claude Code uses Anthropic's protocol natively; pointing it at an
+Ollama endpoint without a LiteLLM-style bridge will not work, as
+called out in the `docker-compose.yml` comments.
